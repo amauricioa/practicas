@@ -21,7 +21,7 @@ def convertir_mts_cms(largo_puerta):
     Parameters
     ----------
     largo_puerta:float
-       operando para calculo de conversión
+       metros para conversión
     Returns
     -------
     largo_puerta_cms:float
@@ -41,7 +41,7 @@ def convertir_min_seg(minutos):
     Returns
     -------
     segundos:float
-      resultado de conversion de minutos a segundos
+      resultado de conversión de minutos a segundos
     """
     segundos = minutos * 60
     return segundos
@@ -51,7 +51,7 @@ def calcular_radio(diametro_polea):
     """
     Parameters
     ----------
-    diamtro_polea:float
+    diametro_polea:float
        operando para calculo de radio
     Returns
     -------
