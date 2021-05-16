@@ -1,4 +1,4 @@
-""" Reto 1 - protegiendo el castillo V1
+""" Reto 1 - protegiendo el castillo - v1.0
     Mauricio Agudelo
     15/05/2021 """
 
@@ -16,7 +16,7 @@ def bienvenida():
     print("="*100)
 
 
-def convertir_mts_cms(largo_puerta):
+def convertir_mts_cms(metros):
     """
     Parameters
     ----------
@@ -28,8 +28,8 @@ def convertir_mts_cms(largo_puerta):
       resultado de conversion de metros a centimetros
     """
     factor_coversion_cms = 100
-    largo_puerta_cms = largo_puerta * factor_coversion_cms
-    return largo_puerta_cms
+    centimetros = metros * factor_coversion_cms
+    return centimetros
 
 
 def convertir_min_seg(minutos):
@@ -37,7 +37,7 @@ def convertir_min_seg(minutos):
     Parameters
     ----------
     minutos:float
-       operando para calculo de conversión
+       minutos a convertir
     Returns
     -------
     segundos:float
@@ -62,12 +62,33 @@ def calcular_radio(diametro_polea):
     return radio_polea
 
 
-def calcular_vueltas(diametro_polea, largo_puerta):
+def calcular_largo_cuerda(largo_puerta, alto_muro):
     """
     Parameters
     ----------
-    diametro_polea:float
-       diametro de la polea
+    largo_puerta:float
+       largo de la puerta para hallar largo cuerda
+    alto_muro:float
+        alto del muro para hallar largo cuerda
+    Returns
+    -------
+    largo_cuerda:float
+      largo de la cuerda en cms restando diferencia de puerta y muro 
+    """
+    largo_puerta_cms = convertir_mts_cms(largo_puerta)
+    alto_muro_cms = convertir_mts_cms(alto_muro)
+    largo_cuerda = (largo_puerta_cms**2+alto_muro_cms**2)**0.5
+    print(largo_cuerda)
+    largo_cuerda = largo_cuerda - (alto_muro_cms - largo_puerta_cms)
+    return largo_cuerda
+
+
+def calcular_vueltas(radio, largo_puerta, alto_muro):
+    """
+    Parameters
+    ----------
+    radio:float
+       radio para calculo
     largo_puerta:float
        largo en mtrs de la puerta
     Returns
@@ -77,9 +98,8 @@ def calcular_vueltas(diametro_polea, largo_puerta):
       largo de la puerta
     """
     pi = 3.1416
-    largo_puerta_cms = convertir_mts_cms(largo_puerta)
-    radio_poela = calcular_radio(diametro_polea)
-    numero_vueltas = largo_puerta_cms / (pi*radio_poela)
+    largo_cuerda = calcular_largo_cuerda(largo_puerta, alto_muro)
+    numero_vueltas = largo_cuerda / (pi*radio)
     return numero_vueltas
 
 
@@ -101,23 +121,22 @@ def calcular_numero_soldados(numero_vueltas, vueltas_soldados):
     return numero_soldados
 
 
-def calcular_velocidad_polea(tiempo_minutos, largo_puerta):
+def calcular_velocidad_polea(tiempo_minutos, radio):
     """
     Parameters
     ----------
     tiempo_minutos:float
        minutos maximos
-    largo_puerta:float
-       cantidad de cuerda a recoger
+    radio:float
+        radio de la circunferencia
     Returns
     -------
     velocidad:float
-      velocidad de la polea en cms/seg
-      con tiempo dado
+      velocidad a la que gira la polea en cms/seg
     """
-    largo = convertir_mts_cms(largo_puerta)
+    pi = 3.1416
     segundos = convertir_min_seg(tiempo_minutos)
-    velocidad = largo/segundos
+    velocidad = (2*pi*radio)/segundos
     return velocidad
 
 
@@ -125,21 +144,28 @@ def calcular_velocidad_polea(tiempo_minutos, largo_puerta):
 bienvenida()
 print("\n\nAntes de empezar, necesito que digites los siguientes datos:")
 largo_puerta_mtr = float(input("\n¿Cuantos metros mide la puerta? "))
+alto_muro_mtr = float(input("¿Cuantos metros mide el muro? "))
 diametro_polea = float(
-    input("¿Cuantos Centimetros de diametro mide la polea? "))
+    input("¿Cuantos centimetros de diametro mide la polea? "))
 tiempo_minutos = float(input("¿En cuantos minutos debe cerrar? "))
 
-# Salida
-numero_vueltas = calcular_vueltas(largo_puerta_mtr, diametro_polea)
+# Operaciones
+radio = calcular_radio(diametro_polea)
+numero_vueltas = calcular_vueltas(
+    radio, largo_puerta_mtr, alto_muro_mtr)
 vueltas_soldados = 3
+numero_soldados = calcular_numero_soldados(numero_vueltas, vueltas_soldados)
+velocidad_polea = calcular_velocidad_polea(
+    tiempo_minutos, radio)
 
+# Salida
 print("\n")
 print("+-"*50)
 print("\nCon los datos suministrados tengo los siguientes calculos para usted: \n")
 
 print("Se requieren ", numero_vueltas,
       "vueltas para cerrar completamente la puerta")
-print("Se necesitan ", calcular_numero_soldados(numero_vueltas, vueltas_soldados),
+print("Se necesitan ", numero_soldados,
       "soldados para cerrar completamente la puerta")
 print("Con un tiempo", tiempo_minutos, "minutos, la polea giraría a",
-      calcular_velocidad_polea(tiempo_minutos, largo_puerta_mtr), "cms/seg")
+      velocidad_polea, "cms/seg")
